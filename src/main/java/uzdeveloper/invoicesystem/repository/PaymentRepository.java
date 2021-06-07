@@ -10,4 +10,10 @@ public interface PaymentRepository extends JpaRepository<Payment,Integer> {
 
     @Query(value = "select sum(p.amount) from Payment p where p.invoice.id=?1")
     Double getByInvoiceId(Integer id);
+
+    @Query(value = "select p.invoice.id from Payment p group by p.invoice.id order by p.invoice.id")
+    List<Integer> getByInvoice();
+
+
+
 }

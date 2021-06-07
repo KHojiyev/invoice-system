@@ -21,7 +21,6 @@ public interface CustomerService {
 
     public Response updateCustomer(Integer id, Customer customer);
 
-
     public Response customers_without_orders();
 
     public  Response customers_last_orders();

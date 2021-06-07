@@ -23,7 +23,7 @@ public class Detail {
     @ManyToOne
     private Product product;
 
-    @Column(nullable = false,columnDefinition = "smallint")
+    @Column(columnDefinition = "smallint")
     private short quantity;
 
 

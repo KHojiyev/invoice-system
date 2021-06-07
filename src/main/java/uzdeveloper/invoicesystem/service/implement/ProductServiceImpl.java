@@ -1,6 +1,7 @@
 package uzdeveloper.invoicesystem.service.implement;
 
 import org.springframework.stereotype.Service;
+import uzdeveloper.invoicesystem.repository.*;
 import uzdeveloper.invoicesystem.response.BulkProducts;
 import uzdeveloper.invoicesystem.response.OrdersByCountry;
 import uzdeveloper.invoicesystem.response.Response;
@@ -8,15 +9,9 @@ import uzdeveloper.invoicesystem.response.HighDemandProducts;
 import uzdeveloper.invoicesystem.dto.ProductDTO;
 import uzdeveloper.invoicesystem.entity.Category;
 import uzdeveloper.invoicesystem.entity.Product;
-import uzdeveloper.invoicesystem.repository.CategoryRepository;
-import uzdeveloper.invoicesystem.repository.CustomerRepository;
-import uzdeveloper.invoicesystem.repository.OrderRepository;
-import uzdeveloper.invoicesystem.repository.ProductRepository;
 import uzdeveloper.invoicesystem.service.ProductService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -25,13 +20,15 @@ public class ProductServiceImpl implements ProductService {
     final CategoryRepository categoryRepository;
     final OrderRepository orderRepository;
     final CustomerRepository customerRepository;
+    final DetailRepository detailRepository;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, OrderRepository orderRepository, CustomerRepository customerRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, OrderRepository orderRepository, CustomerRepository customerRepository, DetailRepository detailRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
+        this.detailRepository = detailRepository;
     }
 
     @Override
@@ -137,14 +134,16 @@ public class ProductServiceImpl implements ProductService {
         return new Response("SUCCESS",ordersByCountries);
     }
 
+    // there are two way which return Response , with list<Product> or list< BulkProducts>
+    // i used set for saving product only one time
     @Override
-    public Response bulk_products() {
-        List<BulkProducts> bulkProducts = new ArrayList<>();
+     public Response bulk_products() {
+        Set<Product> bulkProducts = new HashSet<>();
         List<Product> all = productRepository.findAll();
-        for (Product product : all) {
-            Integer orderCountByProductId = orderRepository.getOrderCountByProductId(product.getId());
-            if (orderCountByProductId>=8)
-                bulkProducts.add(new BulkProducts(product.getId(),product.getPrice()));
+        List<Integer> productIds = detailRepository.listOfProductIds();
+        for (Integer productId : productIds) {
+            Product product = productRepository.findById(productId).get();
+            bulkProducts.add(product);
         }
         return new Response("SUCCESS",bulkProducts);
     }

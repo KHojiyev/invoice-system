@@ -11,6 +11,7 @@ public class OverpaidInvoices {
 
     private Integer invoiceId;
     private Double reimbursedAmount;
+    private Double paid;
 
 
 

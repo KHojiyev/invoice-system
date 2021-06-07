@@ -9,9 +9,7 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer,Integer> {
 
 
-    @Query(value = "select c from Customer c  left join Order o on o.customer.id = c.id  where o.date  between  '2016-01-01T00:00:00' and '2016-12-31T00:00:00'" +
-            "and  o.customer.id is null ")
-    List<Customer>   customers_without_orders();
+
 
 
 //    @Query(value = "select c.id,c.name,o.date  from  Customer c left join Order o on o.customer.id = c.id where  " +

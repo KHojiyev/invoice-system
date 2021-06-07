@@ -58,7 +58,7 @@ public class OrderController {
         return orderServiceImpl.postOrderDetails(orderDetailsDTO);
     }
 
-    @GetMapping("/orders_without_invoices")   // query did not return a unique result: 3
+    @GetMapping("/orders_without_invoices") // query did not return a unique result: 3
     public Response orders_without_invoices(){
         return orderServiceImpl.orders_without_invoices();
     }

@@ -1,12 +1,12 @@
 package uzdeveloper.invoicesystem.service.implement;
 
 import org.springframework.stereotype.Service;
-import uzdeveloper.invoicesystem.response.OrdersWithoutInvoices;
-import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.dto.OrderDTO;
 import uzdeveloper.invoicesystem.dto.OrderDetailsDTO;
 import uzdeveloper.invoicesystem.entity.*;
 import uzdeveloper.invoicesystem.repository.*;
+import uzdeveloper.invoicesystem.response.OrdersWithoutInvoices;
+import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.service.OrderService;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     public Response getAllOrders() {
         if (orderRepository.findAll().isEmpty())
             return new Response("FAILED");
-        return new Response("SUCCESS",orderRepository.findAll());
+        return new Response("SUCCESS", orderRepository.findAll());
 
     }
 
@@ -45,76 +45,86 @@ public class OrderServiceImpl implements OrderService {
     public Response getOneOrder(Integer id) {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isEmpty())
-            return new Response("FAILED","such order id was not found");
-        return new Response("SUCCESS",orderOptional.get());
+            return new Response("FAILED", "such order id was not found");
+        return new Response("SUCCESS", orderOptional.get());
 
     }
+
     @Override
     public Response addOrder(OrderDTO orderDTO) {
         Optional<Customer> customerOptional = customerRepository.findById(orderDTO.getCustomerId());
         if (customerOptional.isEmpty())
-            return new Response("FAILED","Such customer id was not found");
+            return new Response("FAILED", "Such customer id was not found");
         Order order = new Order();
         order.setDate(orderDTO.getDate());
         order.setCustomer(customerOptional.get());
         orderRepository.save(order);
 
-        return new Response("SUCCESS","Order was added");
+        return new Response("SUCCESS", "Order was added");
 
     }
+
     @Override
     public Response addOrders(List<OrderDTO> orderDTO) {
         for (OrderDTO dto : orderDTO) {
             Optional<Customer> customerOptional = customerRepository.findById(dto.getCustomerId());
             if (customerOptional.isEmpty())
-                return new Response("FAILED","Such customer id was not found");
+                return new Response("FAILED", "Such customer id was not found");
             Order order = new Order();
             order.setDate(dto.getDate());
             order.setCustomer(customerOptional.get());
             orderRepository.save(order);
         }
-        return new Response("SUCCESS","Orders were added");
+        return new Response("SUCCESS", "Orders were added");
     }
+
     @Override
     public Response updateOrder(Integer id, OrderDTO orderDTO) {
         Optional<Customer> customerOptional = customerRepository.findById(orderDTO.getCustomerId());
         if (customerOptional.isEmpty())
-            return new Response("FAILED","Such customer id was not found");
+            return new Response("FAILED", "Such customer id was not found");
 
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isEmpty())
-            return new Response("FAILED","such order id was not found");
+            return new Response("FAILED", "such order id was not found");
 
         Order order = orderOptional.get();
         order.setCustomer(customerOptional.get());
         order.setDate(orderDTO.getDate());
-        return  new Response("SUCCESS","order was updated");
+        return new Response("SUCCESS", "order was updated");
 
 
     }
+
     @Override
     public Response deleteOrder(Integer id) {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isEmpty())
-            return new Response("FAILED","such order id was not found");
+            return new Response("FAILED", "such order id was not found");
         orderRepository.deleteById(id);
-        return  new Response("SUCCESS","order was deleted");
+        return new Response("SUCCESS", "order was deleted");
     }
 
     @Override
     public Response orders_without_details() {
-        List<Order> orders = orderRepository.orders_without_details();
-        return new Response("SUCCESS",orders);
+        List<Integer> integers = detailRepository.listOfOrderIds();
+        List<Order> all = orderRepository.findAll();
+        List<Order> orderList = new ArrayList<>();
+        for (Order order : all) {
+            if (!integers.contains(order.getId()))
+                orderList.add(order);
+        }
+        return new Response("SUCCESS", orderList);
     }
 
     @Override
     public Response postOrderDetails(OrderDetailsDTO orderDetailsDTO) {
         Optional<Product> optionalProduct = productRepository.findById(orderDetailsDTO.getProductId());
         if (optionalProduct.isEmpty())
-            return new Response("FAILED","such product id was not found");
+            return new Response("FAILED", "such product id was not found");
         Optional<Customer> optionalCustomer = customerRepository.findById(orderDetailsDTO.getCustomerId());
         if (optionalCustomer.isEmpty())
-            return new Response("FAILED","such customer id was not found");
+            return new Response("FAILED", "such customer id was not found");
 
         Order order = new Order();
         LocalDate localDate = LocalDate.now();
@@ -132,9 +142,9 @@ public class OrderServiceImpl implements OrderService {
         invoice.setOrder(order);
         invoice.setDue(LocalDate.now().plusMonths(6));
         invoice.setIssueDate(localDate);
-        invoice.setAmount((double)orderDetailsDTO.getQuantity());
+        invoice.setAmount((double) orderDetailsDTO.getQuantity());
         Integer invoice1 = invoiceRepository.saveAndFlush(invoice).getId();
-        return new Response("SUCCESS",(Integer)invoice1);
+        return new Response("SUCCESS", (Integer) invoice1);
 
 
     }
@@ -143,22 +153,21 @@ public class OrderServiceImpl implements OrderService {
     public Response orders_without_invoices() {
         List<OrdersWithoutInvoices> ordersWithoutInvoices = new ArrayList<>();
         List<Order> all = orderRepository.findAll();
-        for (Order order : all) {
-            Order ordersByOrderId = orderRepository.getOrdersByOrderId(order.getId());
-            if (ordersByOrderId==null) {
-                List<Detail> listOfDetailsByOrderId = detailRepository.getListOfDetailsByOrderId(order.getId());
-                if (detailRepository.getListOfDetailsByOrderId(order.getId())!=null){
-                    double price = 0;
-                    for (Detail detail : listOfDetailsByOrderId) {
-                        Product product = detail.getProduct();
-                        price+=product.getPrice();
-                    }
-                    ordersWithoutInvoices.add(new OrdersWithoutInvoices(order.getId(),order.getDate(),price));
-                }
+        List<Integer> ordersByOrderId = orderRepository.getOrdersByOrderId();
+        List<Integer> integers = detailRepository.listOfOrderIds();
 
+        for (Order order : all) {
+
+            Double listOfDetailsByOrderId = detailRepository.getListOfDetailsByOrderId(order.getId());
+            Integer quantityByOrderId = detailRepository.getQuantityByOrderId(order.getId());
+
+            if (!ordersByOrderId.contains(order.getId())) {
+                if (integers.contains(order.getId())){
+                    ordersWithoutInvoices.add(new OrdersWithoutInvoices(order.getId(), order.getDate(), listOfDetailsByOrderId, quantityByOrderId));
+                }
             }
         }
-        return new Response("SUCCESS",ordersWithoutInvoices);
+        return new Response("SUCCESS", ordersWithoutInvoices);
 
     }
 }

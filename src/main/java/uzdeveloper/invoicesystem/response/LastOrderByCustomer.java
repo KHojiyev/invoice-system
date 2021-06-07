@@ -5,19 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrdersWithoutInvoices {
+public class LastOrderByCustomer {
 
     private Integer id;
+    private String Name;
     private LocalDate date;
-    private Double price;
-    private Integer quantity;
-
-
 
 
 }

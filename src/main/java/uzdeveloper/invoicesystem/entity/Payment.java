@@ -17,10 +17,10 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column
     private Timestamp time;
 
-    @Column(length = 8,scale = 2,nullable = false,columnDefinition = "numeric")
+    @Column
     private Double amount;
 
     @ManyToOne

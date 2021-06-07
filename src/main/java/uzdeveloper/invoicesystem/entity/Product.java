@@ -16,19 +16,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 10)
+    @Column
     private String name;
 
     @ManyToOne
     private Category category;
 
-    @Column(length = 20)
+    @Column(length = 30000)
     private String description;
 
-    @Column(length = 6, scale = 2)
+    @Column
     private Double price;
 
-    @Column(length = 1024)
+    @Column
     private String photo;
 
 

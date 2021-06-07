@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 public class BulkProducts {
 
     private Integer productId;
+    private Integer orderId;
     private Double price;
+
 
 
 }

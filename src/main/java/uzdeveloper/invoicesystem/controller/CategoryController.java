@@ -1,5 +1,6 @@
 package uzdeveloper.invoicesystem.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.entity.Category;

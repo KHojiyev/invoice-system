@@ -1,11 +1,15 @@
 package uzdeveloper.invoicesystem.service.implement;
 
 import org.springframework.stereotype.Service;
-import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.entity.Customer;
+import uzdeveloper.invoicesystem.entity.Order;
 import uzdeveloper.invoicesystem.repository.CustomerRepository;
+import uzdeveloper.invoicesystem.repository.OrderRepository;
+import uzdeveloper.invoicesystem.response.LastOrderByCustomer;
+import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.service.CustomerService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +17,11 @@ import java.util.Optional;
 public class CustomerServiceImpl implements CustomerService {
 
     final CustomerRepository customerRepository;
+    final OrderRepository orderRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, OrderRepository orderRepository) {
         this.customerRepository = customerRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -77,13 +83,39 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Response customers_without_orders() {
-        List<Customer> customers = customerRepository.customers_without_orders();
-        return new Response("SUCCESS",customers);
+        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customersWithoutOrders = new ArrayList<>();
+        List<Integer> allCustomerIds = orderRepository.getAllCustomerIds();
+        for (Customer customer : customers) {
+            if (!allCustomerIds.contains(customer.getId()))
+                customersWithoutOrders.add(customer);
+        }
+
+        return new Response("SUCCESS", customersWithoutOrders);
     }
 
     @Override
     public Response customers_last_orders() {
-        return null;
+
+        List<Customer> all = customerRepository.findAll();
+        List<LastOrderByCustomer> infos = new ArrayList<>();
+        List<Integer> allCustomerIds = orderRepository.getAllCustomerIds();
+        for (Integer allCustomerId : allCustomerIds) {
+            Customer customer = customerRepository.findById(allCustomerId).get();
+
+            List<Order> lastOrderByCustomerId = orderRepository.getLastOrderByCustomerId(customer.getId());
+            for (Order order : lastOrderByCustomerId) {
+                infos.add(new LastOrderByCustomer(
+                        customer.getId(),
+                        customer.getName(),
+                        order.getDate()));
+                break;
+            }
+
+        }
+
+
+        return new Response("SUCCESS", infos);
     }
 
     @Override

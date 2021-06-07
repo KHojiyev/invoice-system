@@ -117,18 +117,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Response overpaid_invoices() {
         List<OverpaidInvoices> invoices = new ArrayList<>();
         List<Invoice> all = invoiceRepository.findAll();
-
-        for (Invoice invoice : all) {
+        List<Integer> byInvoice = paymentRepository.getByInvoice();
+        for (Integer integer : byInvoice) {
+            Invoice invoice = invoiceRepository.findById(integer).get();
             double reimbursed =0;
-            Order order = invoice.getOrder();
-            if (paymentRepository.getByInvoiceId(order.getId())!=null){
-                reimbursed = paymentRepository.getByInvoiceId(order.getId()) - invoice.getAmount();
-                if (reimbursed>0)
-                    invoices.add(new OverpaidInvoices(invoice.getId(),reimbursed));
-            }
+            Double byInvoiceId = paymentRepository.getByInvoiceId(invoice.getId());
 
-
+            if (invoice.getAmount()<byInvoiceId)
+                invoices.add(new OverpaidInvoices(invoice.getId(),invoice.getAmount(),byInvoiceId));
         }
+
         return new Response("SUCCESS",invoices);
     }
 

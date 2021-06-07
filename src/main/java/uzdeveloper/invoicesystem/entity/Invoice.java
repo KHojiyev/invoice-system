@@ -21,10 +21,10 @@ public class Invoice {
     @OneToOne
     private Order order;
 
-    @Column(length = 8,scale = 2,nullable = false,columnDefinition = "numeric")
+    @Column(columnDefinition = "numeric")
     private Double amount;
 
-    @Column(name = "issued",nullable = false)
+    @Column(name = "issued")
     private LocalDate issueDate;
 
     @Column(nullable = false)
