@@ -81,6 +81,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setInvoice(invoiceOptional.get());
         payment.setTime(Timestamp.valueOf(LocalDateTime.now()));
         payment.setAmount(paymentDTO.getAmount());
+        paymentRepository.save(payment);
 
         return new Response("SUCCESS", "payment was updated");
 

@@ -1,6 +1,7 @@
 package uzdeveloper.invoicesystem.service.implement;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uzdeveloper.invoicesystem.dto.OrderDTO;
 import uzdeveloper.invoicesystem.dto.OrderDetailsDTO;
 import uzdeveloper.invoicesystem.entity.*;
@@ -91,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderOptional.get();
         order.setCustomer(customerOptional.get());
         order.setDate(orderDTO.getDate());
+        orderRepository.save(order);
         return new Response("SUCCESS", "order was updated");
 
 
@@ -117,6 +119,7 @@ public class OrderServiceImpl implements OrderService {
         return new Response("SUCCESS", orderList);
     }
 
+    @Transactional
     @Override
     public Response postOrderDetails(OrderDetailsDTO orderDetailsDTO) {
         Optional<Product> optionalProduct = productRepository.findById(orderDetailsDTO.getProductId());

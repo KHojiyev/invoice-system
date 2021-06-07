@@ -78,6 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer1.setCountry(customer.getCountry());
         customer1.setAddress(customer.getAddress());
         customer1.setName(customer.getName());
+        customerRepository.save(customer1);
         return new Response("SUCCESS", " Customer was updated");
     }
 

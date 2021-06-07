@@ -101,6 +101,7 @@ public class DetailServiceImpl implements DetailService {
         detail.setOrder(orderOptional.get());
         detail.setProduct(productOptional.get());
         detail.setQuantity(detailDTO.getQuantity());
+        detailRepository.save(detail);
 
         return new Response("SUCCESS", "Detail was updated");
 

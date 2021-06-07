@@ -87,6 +87,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setAmount(invoiceDTO.getAmount());
         invoice.setIssueDate(invoiceDTO.getIssueDate());
         invoice.setDue(invoiceDTO.getDue());
+        invoiceRepository.save(invoice);
 
         return new Response("SUCCESS", "Invoice was updated");
     }

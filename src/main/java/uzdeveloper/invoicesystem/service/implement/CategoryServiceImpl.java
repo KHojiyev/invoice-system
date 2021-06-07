@@ -58,6 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryOptional.isEmpty())
             return new Response("FAILED","Such category id was not found");
         categoryOptional.get().setName(category.getName());
+        categoryRepository.save(categoryOptional.get());
         return new Response("SUCCESS","Category was updated");
 
     }
