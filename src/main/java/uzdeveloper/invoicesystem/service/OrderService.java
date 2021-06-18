@@ -25,7 +25,7 @@ public interface OrderService {
 
     public Response orders_without_details();
 
-    public  Response postOrderDetails(OrderDetailsDTO orderDetailsDTO);
+    public Response postOrderDetails(OrderDetailsDTO orderDetailsDTO);
 
     public Response orders_without_invoices();
 }

@@ -27,7 +27,7 @@ public class Response {
         this.object = object;
     }
 
-    public Response( String status,String message) {
+    public Response(String status, String message) {
         this.message = message;
         this.status = status;
     }

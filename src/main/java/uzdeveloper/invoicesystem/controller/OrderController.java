@@ -54,15 +54,14 @@ public class OrderController {
     }
 
     @PostMapping
-    public Response postOrderDetails(@RequestBody OrderDetailsDTO orderDetailsDTO){
+    public Response postOrderDetails(@RequestBody OrderDetailsDTO orderDetailsDTO) {
         return orderServiceImpl.postOrderDetails(orderDetailsDTO);
     }
 
     @GetMapping("/orders_without_invoices") // query did not return a unique result: 3
-    public Response orders_without_invoices(){
+    public Response orders_without_invoices() {
         return orderServiceImpl.orders_without_invoices();
     }
-
 
 
 }

@@ -14,5 +14,4 @@ public class BulkProducts {
     private Double price;
 
 
-
 }

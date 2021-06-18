@@ -18,6 +18,4 @@ public class OrdersWithoutInvoices {
     private Integer quantity;
 
 
-
-
 }

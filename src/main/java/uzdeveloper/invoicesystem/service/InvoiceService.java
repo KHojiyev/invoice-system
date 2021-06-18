@@ -11,17 +11,22 @@ public interface InvoiceService {
 
 
     public Response getAllInvoices();
+
     public Response getOneInvoice(Integer id);
+
     public Response addInvoice(InvoiceDTO invoiceDTO);
+
     public Response addInvoices(List<InvoiceDTO> invoiceDTO);
+
     public Response updateInvoice(Integer id, InvoiceDTO invoiceDTO);
+
     public Response deleteInvoice(Integer id);
+
     public Response getAllExpired();
 
     public Response wrong_date_invoices();
 
     public Response overpaid_invoices();
-
 
 
 }

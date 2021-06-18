@@ -59,8 +59,10 @@ public class ProductController {
     }
 
     @GetMapping("/bulk_products")
-    public Response bulk_products(){
+    public Response bulk_products() {
         return productServiceImpl.bulk_products();
-    };
+    }
+
+    ;
 
 }

@@ -129,16 +129,16 @@ public class ProductServiceImpl implements ProductService {
         List<String> countryCodes = customerRepository.getCountryCodes();
         for (String countryCode : countryCodes) {
             Integer countOrdersByCountry = orderRepository.getCountOrdersByCountry(countryCode);
-                if (countOrdersByCountry>0)
-                    ordersByCountries.add(new OrdersByCountry(countOrdersByCountry,countryCode));
+            if (countOrdersByCountry > 0)
+                ordersByCountries.add(new OrdersByCountry(countOrdersByCountry, countryCode));
         }
-        return new Response("SUCCESS",ordersByCountries);
+        return new Response("SUCCESS", ordersByCountries);
     }
 
     // there are two way which return Response , with list<Product> or list< BulkProducts>
     // i used set for saving product only one time
     @Override
-     public Response bulk_products() {
+    public Response bulk_products() {
         Set<Product> bulkProducts = new HashSet<>();
         List<Product> all = productRepository.findAll();
         List<Integer> productIds = detailRepository.listOfProductIds();
@@ -146,6 +146,6 @@ public class ProductServiceImpl implements ProductService {
             Product product = productRepository.findById(productId).get();
             bulkProducts.add(product);
         }
-        return new Response("SUCCESS",bulkProducts);
+        return new Response("SUCCESS", bulkProducts);
     }
 }

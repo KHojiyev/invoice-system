@@ -18,42 +18,45 @@ public class CustomerController {
     }
 
     @GetMapping("/list")
-    public Response getAllCustomers(){
+    public Response getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public Response getOneCustomer(@PathVariable Integer id){
+    public Response getOneCustomer(@PathVariable Integer id) {
         return customerService.getOneCustomer(id);
     }
 
     @PostMapping("/one")
-    public Response addCustomer(@RequestBody Customer customer){
+    public Response addCustomer(@RequestBody Customer customer) {
         return customerService.addCustomer(customer);
     }
 
     @PostMapping
-    public Response addCustomers(@RequestBody List<Customer> customer){
+    public Response addCustomers(@RequestBody List<Customer> customer) {
         return customerService.addCustomers(customer);
     }
 
     @PutMapping("/{id}")
-    public Response updateCustomer(@PathVariable Integer id,@RequestBody Customer customer){
-        return customerService.updateCustomer(id,customer);
+    public Response updateCustomer(@PathVariable Integer id, @RequestBody Customer customer) {
+        return customerService.updateCustomer(id, customer);
 
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteCustomer(@PathVariable Integer id){
+    public Response deleteCustomer(@PathVariable Integer id) {
         return customerService.deleteCustomer(id);
-    };
+    }
+
+    ;
 
     @GetMapping("/customers_without_orders")
-    public Response customers_without_orders(){
+    public Response customers_without_orders() {
         return customerService.customers_without_orders();
     }
 
     @GetMapping("/customers_last_orders")
-    public Response customers_last_orders(){
-        return customerService.customers_last_orders();}
+    public Response customers_last_orders() {
+        return customerService.customers_last_orders();
+    }
 }

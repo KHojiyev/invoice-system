@@ -100,13 +100,13 @@ public class PaymentServiceImpl implements PaymentService {
     public Response postByInvoiceId(Integer invoice_id) {
         Optional<Invoice> invoiceOptional = invoiceRepository.findById(invoice_id);
         if (invoiceOptional.isEmpty())
-            return new Response("FAILED","such invoice id was not found");
+            return new Response("FAILED", "such invoice id was not found");
         Payment payment = new Payment();
         payment.setInvoice(invoiceOptional.get());
         payment.setAmount(invoiceOptional.get().getAmount());
         payment.setTime(Timestamp.valueOf(LocalDateTime.now()));
         paymentRepository.save(payment);
 
-        return new Response("SUCCESS",paymentRepository.findAll());
+        return new Response("SUCCESS", paymentRepository.findAll());
     }
 }

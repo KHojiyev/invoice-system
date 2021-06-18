@@ -23,5 +23,5 @@ public interface CustomerService {
 
     public Response customers_without_orders();
 
-    public  Response customers_last_orders();
+    public Response customers_last_orders();
 }

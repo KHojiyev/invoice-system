@@ -38,12 +38,12 @@ public class DetailController {
     }
 
     @PutMapping("/{id}")
-    public Response updateDetail(@PathVariable Integer id,@RequestBody DetailDTO detailDTO) {
-        return detailServiceImpl.updateDetail(id,detailDTO);
+    public Response updateDetail(@PathVariable Integer id, @RequestBody DetailDTO detailDTO) {
+        return detailServiceImpl.updateDetail(id, detailDTO);
     }
 
     @DeleteMapping
-    public Response deleteDetail(@PathVariable Integer id){
+    public Response deleteDetail(@PathVariable Integer id) {
         return detailServiceImpl.deleteDetail(id);
     }
 

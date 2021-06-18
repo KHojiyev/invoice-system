@@ -19,5 +19,4 @@ public class PaymentDTO {
     private Integer invoiceId;
 
 
-
 }

@@ -21,25 +21,25 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Response getAllCategories() {
-    if (categoryRepository.findAll().isEmpty())
-        return new Response("FAILED","Table is empty");
-    return new Response("SUCCESS",categoryRepository.findAll());
+        if (categoryRepository.findAll().isEmpty())
+            return new Response("FAILED", "Table is empty");
+        return new Response("SUCCESS", categoryRepository.findAll());
     }
 
     @Override
     public Response getOneCategory(Integer id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty())
-            return new Response("FAILED","Such category id was not found");
-     return new Response("SUCCESS",categoryOptional.get());
+            return new Response("FAILED", "Such category id was not found");
+        return new Response("SUCCESS", categoryOptional.get());
     }
 
     @Override
     public Response addCategory(Category category) {
-    Category category1 = new Category();
-    category1.setName(category.getName());
-    categoryRepository.save(category1);
-    return new Response("SUCCESS","Category was added");
+        Category category1 = new Category();
+        category1.setName(category.getName());
+        categoryRepository.save(category1);
+        return new Response("SUCCESS", "Category was added");
     }
 
     @Override
@@ -49,17 +49,17 @@ public class CategoryServiceImpl implements CategoryService {
             category2.setName(category1.getName());
             categoryRepository.save(category2);
         }
-        return new Response("SUCCESS","Categories were added");
+        return new Response("SUCCESS", "Categories were added");
     }
 
     @Override
     public Response updateCategory(Integer id, Category category) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty())
-            return new Response("FAILED","Such category id was not found");
+            return new Response("FAILED", "Such category id was not found");
         categoryOptional.get().setName(category.getName());
         categoryRepository.save(categoryOptional.get());
-        return new Response("SUCCESS","Category was updated");
+        return new Response("SUCCESS", "Category was updated");
 
     }
 
@@ -67,14 +67,14 @@ public class CategoryServiceImpl implements CategoryService {
     public Response deleteCategory(Integer id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isEmpty())
-            return new Response("FAILED","Such category id was not found");
+            return new Response("FAILED", "Such category id was not found");
         categoryRepository.deleteById(id);
-        return new Response("SUCCESS","category was deleted");
+        return new Response("SUCCESS", "category was deleted");
     }
 
     @Override
     public Response getByProductId(Integer product_id) {
-        return new Response("SUCCESS",categoryRepository.getCategoryByProductId(product_id));
+        return new Response("SUCCESS", categoryRepository.getCategoryByProductId(product_id));
     }
 
 

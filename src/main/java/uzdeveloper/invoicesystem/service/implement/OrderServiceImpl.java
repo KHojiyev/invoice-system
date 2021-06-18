@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
             Integer quantityByOrderId = detailRepository.getQuantityByOrderId(order.getId());
 
             if (!ordersByOrderId.contains(order.getId())) {
-                if (integers.contains(order.getId())){
+                if (integers.contains(order.getId())) {
                     ordersWithoutInvoices.add(new OrdersWithoutInvoices(order.getId(), order.getDate(), listOfDetailsByOrderId, quantityByOrderId));
                 }
             }

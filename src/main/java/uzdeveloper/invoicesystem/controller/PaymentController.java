@@ -19,36 +19,36 @@ public class PaymentController {
 
 
     @GetMapping("/list")
-    public Response getAllPayments(){
+    public Response getAllPayments() {
         return paymentServiceImpl.getAllPayments();
     }
 
     @GetMapping("/details")
-    public Response getOnePayment(@RequestParam Integer id){
+    public Response getOnePayment(@RequestParam Integer id) {
         return paymentServiceImpl.getOnePayment(id);
     }
 
     @PostMapping("/one")
-    public Response addPayment(@RequestBody PaymentDTO paymentDTO){
+    public Response addPayment(@RequestBody PaymentDTO paymentDTO) {
         return paymentServiceImpl.addPayment(paymentDTO);
     }
 
     @PostMapping("/list")
-    public Response addPayments(@RequestBody List<PaymentDTO> paymentsDTO){
+    public Response addPayments(@RequestBody List<PaymentDTO> paymentsDTO) {
         return paymentServiceImpl.addPayments(paymentsDTO);
     }
 
     @PostMapping
-    public Response postByInvoiceId(@RequestParam Integer invoice_id){
+    public Response postByInvoiceId(@RequestParam Integer invoice_id) {
         return paymentServiceImpl.postByInvoiceId(invoice_id);
     }
 
     @PutMapping("/{id}")
-    public Response updatePayment(@PathVariable Integer id,@RequestBody PaymentDTO paymentDTO){
-        return paymentServiceImpl.updatePayment(id,paymentDTO);
+    public Response updatePayment(@PathVariable Integer id, @RequestBody PaymentDTO paymentDTO) {
+        return paymentServiceImpl.updatePayment(id, paymentDTO);
     }
 
-    public Response deletePayment(@PathVariable Integer id){
+    public Response deletePayment(@PathVariable Integer id) {
         return paymentServiceImpl.deletePayment(id);
     }
 }

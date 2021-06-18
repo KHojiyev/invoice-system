@@ -14,5 +14,4 @@ public class OverpaidInvoices {
     private Double paid;
 
 
-
 }

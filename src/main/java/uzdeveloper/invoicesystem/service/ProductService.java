@@ -10,10 +10,15 @@ import java.util.List;
 public interface ProductService {
 
     public Response getAllProducts();
+
     public Response getOneProduct(Integer id);
+
     public Response addProduct(ProductDTO productDTO);
+
     public Response addProducts(List<ProductDTO> productsDTO);
+
     public Response updateProduct(Integer id, ProductDTO productDTO);
+
     public Response deleteProduct(Integer id);
 
 
