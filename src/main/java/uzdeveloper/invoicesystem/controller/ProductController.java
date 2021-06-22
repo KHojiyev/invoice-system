@@ -1,7 +1,10 @@
 package uzdeveloper.invoicesystem.controller;
 
 
+import org.springframework.boot.web.server.Http2;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.dto.ProductDTO;
 import uzdeveloper.invoicesystem.service.implement.ProductServiceImpl;
@@ -16,6 +19,11 @@ public class ProductController {
 
     public ProductController(ProductServiceImpl productServiceImpl) {
         this.productServiceImpl = productServiceImpl;
+    }
+
+    @PostMapping("/uploadToServer")
+    public HttpEntity<Response> uploadToServer(@RequestParam("files")MultipartFile[] files){
+       return productServiceImpl.uploadToServer(files);
     }
 
     @GetMapping("/list")

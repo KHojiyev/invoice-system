@@ -1,8 +1,14 @@
 package uzdeveloper.invoicesystem.service.implement;
 
+import lombok.SneakyThrows;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import uzdeveloper.invoicesystem.entity.Attachment;
 import uzdeveloper.invoicesystem.repository.*;
-import uzdeveloper.invoicesystem.response.BulkProducts;
+import uzdeveloper.invoicesystem.response.AttachmentRepository;
 import uzdeveloper.invoicesystem.response.OrdersByCountry;
 import uzdeveloper.invoicesystem.response.Response;
 import uzdeveloper.invoicesystem.response.HighDemandProducts;
@@ -11,6 +17,9 @@ import uzdeveloper.invoicesystem.entity.Category;
 import uzdeveloper.invoicesystem.entity.Product;
 import uzdeveloper.invoicesystem.service.ProductService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -21,14 +30,19 @@ public class ProductServiceImpl implements ProductService {
     final OrderRepository orderRepository;
     final CustomerRepository customerRepository;
     final DetailRepository detailRepository;
+    final AttachmentRepository attachmentRepository;
 
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, OrderRepository orderRepository, CustomerRepository customerRepository, DetailRepository detailRepository) {
+    public static final String uploadDirectory = "src/main/resources/static/savedFiles/";
+
+
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, OrderRepository orderRepository, CustomerRepository customerRepository, DetailRepository detailRepository, AttachmentRepository attachmentRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.detailRepository = detailRepository;
+        this.attachmentRepository = attachmentRepository;
     }
 
     @Override
@@ -51,15 +65,22 @@ public class ProductServiceImpl implements ProductService {
         Optional<Category> categoryOptional = categoryRepository.findById(productDTO.getCategoryId());
         if (categoryOptional.isEmpty())
             return new Response("FAILED", "category id was not found");
+        Optional<Attachment> optionalAttachment = attachmentRepository.findById(productDTO.getPhotoId());
+        if(optionalAttachment.isEmpty())
+            return new Response("FAILED", "Attachment id was not found");
+
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setCategory(categoryOptional.get());
+
+        // let's try for list of attachments
+        product.setAttachment(optionalAttachment.get());
         product.setPrice(productDTO.getPrice());
-        product.setPhoto(productDTO.getPhoto());
 
         productRepository.save(product);
         return new Response("SUCCESS", "product was added");
+
     }
 
     @Override
@@ -68,12 +89,15 @@ public class ProductServiceImpl implements ProductService {
             Optional<Category> categoryOptional = categoryRepository.findById(productDTO.getCategoryId());
             if (categoryOptional.isEmpty())
                 return new Response("FAILED", "category id was not found");
+            Optional<Attachment> optionalAttachment = attachmentRepository.findById(productDTO.getPhotoId());
+            if(optionalAttachment.isEmpty())
+                return new Response("FAILED", "Attachment id was not found");
             Product product = new Product();
             product.setName(productDTO.getName());
             product.setDescription(productDTO.getDescription());
             product.setCategory(categoryOptional.get());
+            product.setAttachment(optionalAttachment.get());
             product.setPrice(productDTO.getPrice());
-            product.setPhoto(productDTO.getPhoto());
 
             productRepository.save(product);
         }
@@ -90,11 +114,15 @@ public class ProductServiceImpl implements ProductService {
         if (categoryOptional.isEmpty())
             return new Response("FAILED", "category id was not found");
 
+        Optional<Attachment> optionalAttachment = attachmentRepository.findById(productDTO.getPhotoId());
+        if(optionalAttachment.isEmpty())
+            return new Response("FAILED", "Attachment id was not found");
+
         Product product = productOptional.get();
         product.setCategory(categoryOptional.get());
         product.setName(productDTO.getName());
+        product.setAttachment(optionalAttachment.get());
         product.setPrice(productDTO.getPrice());
-        product.setPhoto(productDTO.getPhoto());
         productRepository.save(product);
 
         return new Response("SUCCESS", "product was updated");
@@ -147,5 +175,38 @@ public class ProductServiceImpl implements ProductService {
             bulkProducts.add(product);
         }
         return new Response("SUCCESS", bulkProducts);
+    }
+
+    // saving to server by method Post and  MultipartFile
+    @SneakyThrows
+    @Override
+    public HttpEntity<Response> uploadToServer(MultipartFile[] files) {
+        for (MultipartFile file : files) {
+
+            if (!file.isEmpty()){
+                String originalFilename = file.getOriginalFilename();
+                if (originalFilename.isEmpty())
+                    return null;
+                String[] split = originalFilename.split("\\.");
+                String name = UUID.randomUUID() + "." + split[split.length - 1];
+
+                Attachment attachment = new Attachment(
+                        originalFilename,
+                        file.getSize(),
+                        file.getContentType()
+                );
+
+                Path path = Paths.get(uploadDirectory +name);
+                long copy = Files.copy(file.getInputStream(), path);
+
+                Attachment save = attachmentRepository.save(attachment);
+
+                // fix
+                return ResponseEntity.status(true ? HttpStatus.OK : HttpStatus.BAD_GATEWAY).body(new Response("SUCCESS"," "));
+            }
+
+
+        }
+        return null;
     }
 }

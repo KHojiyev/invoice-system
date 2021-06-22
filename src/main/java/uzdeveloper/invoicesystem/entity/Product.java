@@ -28,8 +28,8 @@ public class Product {
     @Column
     private Double price;
 
-    @Column
-    private String photo;
+    @ManyToOne
+    private Attachment  attachment;
 
 
 }
